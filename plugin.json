@@ -1,0 +1,16 @@
+{
+  "id": "bajrangcoder.tailwind.fold",
+  "name": "Tailwind Fold",
+  "main": "main.js",
+  "version": "0.1.0",
+  "readme": "readme.md",
+  "icon": "icon.png",
+  "files": [],
+  "minVersionCode": 290,
+  "price": 0,
+  "author": {
+    "name": "Raunak Raj",
+    "email": "bajrangcoders@gmail.com",
+    "github": "bajrangCoder"
+  }
+}

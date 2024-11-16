@@ -1,0 +1,19 @@
+{
+  "name": "tailwind-fold",
+  "version": "0.1.0",
+  "description": "Improves code readability by folding class attributes",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.19.3",
+    "jszip": "^3.10.1"
+  },
+  "dependencies": {
+    "@types/ace": "^0.0.51"
+  }
+}
