@@ -66,6 +66,9 @@ export default class TailwindFoldHandler {
 
         this.folds = new Map();
         this.setupDefaultModes();
+        // Store bound methods for proper cleanup
+        this.handleChange = this.handleChange.bind(this);
+        this.handleCursorChange = this.handleCursorChange.bind(this);
         this.setupEditor();
         this.allFolds = new Set(); // Track all possible fold positions
     }
@@ -166,16 +169,18 @@ export default class TailwindFoldHandler {
             .join('|');
         return new RegExp(patternString);
     }
+    
+    handleChange() {
+        if (this.changeTimeout) {
+            clearTimeout(this.changeTimeout);
+        }
+        this.changeTimeout = setTimeout(() => this.updateFolds(), 10);
+    }
 
     setupEditor() {
         if (this.options.autoFold) {
-            this.editor.on('change', () => {
-                setTimeout(() => this.updateFolds(), 10);
-            });
-
-            this.editor.session.selection.on('changeCursor', () => {
-                this.handleCursorChange();
-            });
+            this.editor.on('change', this.handleChange);
+            this.editor.session.selection.on('changeCursor', this.handleCursorChange);
         }
 
         this.editor.commands.addCommand({
@@ -450,8 +455,13 @@ export default class TailwindFoldHandler {
     destroy() {
         // Remove change and cursor listeners
         if (this.options.autoFold) {
-            this.editor.off('change', this.updateFolds);
+            this.editor.off('change', this.handleChange);
             this.editor.session.selection.off('changeCursor', this.handleCursorChange);
+        }
+        
+        if (this.changeTimeout) {
+            clearTimeout(this.changeTimeout);
+            this.changeTimeout = null;
         }
 
         // Remove the command added to the editor

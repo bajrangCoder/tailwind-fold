@@ -16,11 +16,22 @@ class TailwindFold {
             };
             appSettings.update(false);
         }
+        this.handleFileSwitch = this.handleFileSwitch.bind(this);
     }
 
     async init() {
-        if (this.settings.isDisable) return;
-        this.initialiseFold();
+        try {
+            if (this.settings.isDisable) return;
+            this.initialiseFold();
+            editorManager.on("switch-file", this.handleFileSwitch);
+        } catch (error) {
+            console.error('TailwindFold init error:', error);
+        }
+    }
+    
+    handleFileSwitch() {
+        this.destroy();
+        setTimeout(() => this.initialiseFold(), 100); // Small delay for editor to settle
     }
 
     initialiseFold() {
@@ -34,6 +45,8 @@ class TailwindFold {
     }
 
     async destroy() {
+        editorManager.off("switch-file", this.handleFileSwitch);
+        
         // Clean up TailwindFoldHandler
         if (this.tailwindFold) {
             this.tailwindFold.destroy();
@@ -120,9 +133,9 @@ class TailwindFold {
                 switch (key) {
                     case "isDisable":
                         if (value) {
-                            this.destroy()
+                            this.destroy();
                         } else {
-                            this.initialiseFold.bind(this);
+                            this.initialiseFold();
                         }
                         break;
                     case "autoFold":
